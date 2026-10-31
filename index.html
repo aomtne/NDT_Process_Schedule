@@ -336,21 +336,22 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   }
   function crewParas(r) { return crewFit(r).paras; }
 
-  // 直書：每人一直行（一段落），12pt、固定行高 14pt；字距緊縮 0.75pt，三字名 33.75pt，放進 35pt 列高且不被切字
+  // 直書：每人一直行（一段落），12pt、最小行高 14pt（固定行高會切掉字的左右）；字距緊縮 0.75pt，三字名 33.75pt，放進 35pt 列高且不被切字
   // 欄寬可放 6 直行；7～9 人自動縮行高與字級；超過 9 人改回橫排
-  // Word 直書（tbRl）由右往左排行，所以段落反序寫入，印出來即「由左至右」
+  // Word 直書（tbRlV）由右往左排行，所以段落反序寫入，印出來即「由左至右」
   const VCOL = W[6] - 56 - 30;
   function crewVert(r) {
     const names = crewOrder(r), n = names.length;
     if (!n || n > 9) return null;
-    let line = 280, pt = 12;
-    if (n > 6) { line = Math.floor(VCOL / n); pt = Math.min(12, Math.floor(line / 20 / 1.15)); }
+    // 最小行高：直行寬依字形自動撐開（標楷體約 1.3 倍字級），以此估算一格放得下幾行
+    let pt = 12, line = 280;
+    if (n > 6) { pt = Math.min(12, Math.floor((W[6] - 25) / (n * 26))); line = pt * 20; }
     return { names, line, pt, sz: pt * 2, ld: false, lead: '' };
   }
-  // 直書儲存格：Word 會把左右邊界轉成上下邊界，三字名會被切到 → 邊界歸零；方向＝「垂直、由右至左」(tbRl)
-  const VCELL = '<w:tcMar><w:top w:w="0" w:type="dxa"/><w:start w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:end w:w="0" w:type="dxa"/></w:tcMar><w:textDirection w:val="tbRl"/>';
+  // 直書儲存格：Word 會把左右邊界轉成上下邊界，三字名會被切到 → 邊界歸零；方向＝直書、字正立（Word「文件方向」藍框 = tbRlV；tbRl 會把字轉 90°）
+  const VCELL = '<w:tcMar><w:top w:w="0" w:type="dxa"/><w:start w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:end w:w="0" w:type="dxa"/></w:tcMar><w:textDirection w:val="tbRlV"/>';
   function crewVertXml(v) {
-    return v.names.slice().reverse().map(nm => '<w:p><w:pPr><w:pStyle w:val="Normal"/><w:snapToGrid w:val="false"/><w:spacing w:before="0" w:after="0" w:line="' + v.line + '" w:lineRule="exact"/><w:jc w:val="center"/>' +
+    return v.names.slice().reverse().map(nm => '<w:p><w:pPr><w:pStyle w:val="Normal"/><w:snapToGrid w:val="false"/><w:spacing w:before="0" w:after="0" w:line="' + v.line + '" w:lineRule="atLeast"/><w:jc w:val="center"/>' +
       '<w:rPr><w:rFonts w:eastAsia="標楷體"/><w:sz w:val="' + v.sz + '"/><w:szCs w:val="' + v.sz + '"/></w:rPr></w:pPr>' +
       '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="標楷體" w:cs="Times New Roman" w:hint="eastAsia"/>' + (nm === v.lead ? '<w:b/><w:bCs/>' : '') +
       '<w:spacing w:val="-15"/><w:sz w:val="' + v.sz + '"/><w:szCs w:val="' + v.sz + '"/></w:rPr><w:t xml:space="preserve">' + esc(nm) + '</w:t></w:r></w:p>').join('');

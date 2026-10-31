@@ -299,10 +299,11 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   function fillRow(rowXml, cps) {
     let i = 0;
     return rowXml.replace(/<w:tc>([\s\S]*?)<\/w:tc>/g, (m, inner) => {
-      const cp = cps[i++];
+      let cp = cps[i++];
       if (cp == null) return m;
       let pr = (inner.match(/<w:tcPr>[\s\S]*?<\/w:tcPr>/) || [''])[0];
       if (pr && !/<w:vAlign/.test(pr)) pr = pr.replace('</w:tcPr>', '<w:vAlign w:val="center"/></w:tcPr>');
+      if (typeof cp === 'object') { pr = pr.replace(/<w:textDirection[^>]*\/>/, '').replace('<w:vAlign', cp.dir + '<w:vAlign'); cp = cp.xml; }
       return '<w:tc>' + pr + cp + '</w:tc>';
     });
   }
@@ -310,11 +311,8 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   const mmdd = iso => iso ? iso.slice(5, 7) + '/' + iso.slice(8, 10) : '';
   const itemText = r => [r.item, r.method].filter(Boolean).join('  ');
   const procText = r => r.proc ? 'QT-QS-' + r.proc : '';
-  function crewOrder(r) {
-    const crew = (r.crew || []).slice();
-    if (r.leader && crew.includes(r.leader)) { crew.splice(crew.indexOf(r.leader), 1); crew.unshift(r.leader); }
-    return crew;
-  }
+  // 表上不標示領隊：依名冊順序列出（領隊只同步到 Google Sheet）
+  function crewOrder(r) { return (r.crew || []).slice(); }
   const strW = t => [...t].reduce((a, c) => a + cw(c), 0);
   function packNames(names, cap) {
     const lines = []; let cur = '', w = 0;
@@ -328,7 +326,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   }
   // 人員欄排版：整個姓名不拆開；有領隊時第二段放「（領隊）」，同原表範例
   function crewFit(r) {
-    const names = crewOrder(r), ld = !!(r.leader && names.includes(r.leader));
+    const names = crewOrder(r), ld = false;
     for (const pt of SIZES) {
       const lines = packNames(names, (W[6] - 56) * 0.9 / (pt * 20));
       if ((lines.length + (ld ? 1 : 0)) * lineH(pt) <= ROW_H - 20) return { pt, sz: pt * 2, ok: true, paras: ld ? [...lines, '（領隊）'] : lines, ld };
@@ -337,6 +335,24 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     return { pt: 7, sz: 14, ok: false, paras: ld ? [...lines, '（領隊）'] : lines, ld };
   }
   function crewParas(r) { return crewFit(r).paras; }
+
+  // 直書：每人一直行（一段落），12pt、固定行高 14pt；字距緊縮 0.5pt 讓三字名（34.5pt）不撐高 35pt 列高
+  // 欄寬可放 6 直行；7～9 人自動縮行高與字級；超過 9 人改回橫排
+  // Word 直書（tbRl）由右往左排行，所以段落反序寫入，印出來即「由左至右」
+  const VCOL = W[6] - 56 - 30;
+  function crewVert(r) {
+    const names = crewOrder(r), n = names.length;
+    if (!n || n > 9) return null;
+    let line = 280, pt = 12;
+    if (n > 6) { line = Math.floor(VCOL / n); pt = Math.min(12, Math.floor(line / 20 / 1.15)); }
+    return { names, line, pt, sz: pt * 2, ld: false, lead: '' };
+  }
+  function crewVertXml(v) {
+    return v.names.slice().reverse().map(nm => '<w:p><w:pPr><w:pStyle w:val="Normal"/><w:snapToGrid w:val="false"/><w:spacing w:before="0" w:after="0" w:line="' + v.line + '" w:lineRule="exact"/><w:jc w:val="center"/>' +
+      '<w:rPr><w:rFonts w:eastAsia="標楷體"/><w:sz w:val="' + v.sz + '"/><w:szCs w:val="' + v.sz + '"/></w:rPr></w:pPr>' +
+      '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="標楷體" w:cs="Times New Roman" w:hint="eastAsia"/>' + (nm === v.lead ? '<w:b/><w:bCs/>' : '') +
+      '<w:spacing w:val="-10"/><w:sz w:val="' + v.sz + '"/><w:szCs w:val="' + v.sz + '"/></w:rPr><w:t xml:space="preserve">' + esc(nm) + '</w:t></w:r></w:p>').join('');
+  }
   const noteParas = r => String(r.note || '').split(/\r?\n/);
 
   // 各欄的內容（網頁也用來顯示超字警告）
@@ -346,7 +362,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   function overflow(r) {
     const c = cellsOf(r), bad = [];
     for (const k of [2, 3, 10]) { const f = fit(c[k], +k); if (!f.ok) bad.push(+k); }
-    if (!crewFit(r).ok) bad.push(6);
+    if (!crewVert(r) && !crewFit(r).ok) bad.push(6);
     return bad;
   }
 
@@ -393,7 +409,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         const r = rows[idx];
         if (!r) { tbl += T.rows[ri]; continue; }
         const n = r.no || idx + 1;   // 區間輸出時沿用完整清單的項次
-        const cf = crewFit(r), note = noteParas(r);
+        const cf = crewFit(r), cv = crewVert(r), note = noteParas(r);
         const noteFit = fit(note, 10);
         const noteJc = (note.length > 1 || noteFit.lines > note.length) ? 'start' : 'center';
         const cps = [
@@ -403,7 +419,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
           cell([procText(r)], 3),
           cell([mmdd(r.start)], 4),
           cell([mmdd(r.end)], 5),
-          cf.paras.map(t => para(t, cf.sz, cf.ld ? 'start' : 'center')).join(''),
+          cv ? { dir: '<w:textDirection w:val="tbRl"/>', xml: crewVertXml(cv) } : cf.paras.map(t => para(t, cf.sz, cf.ld ? 'start' : 'center')).join(''),
           cell([r.cal ? 'V' : ''], 7),
           cell([r.done ? 'V' : ''], 8),
           cell([''], 9),

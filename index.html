@@ -114,13 +114,14 @@ button.pill{cursor:pointer}
 .case{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:6px;cursor:pointer;background:#fff}
 .case:hover{border-color:var(--brand2);background:#f6f9fd}.case.cur{border-color:var(--brand2);box-shadow:inset 3px 0 0 var(--brand2)}
 .case b{font-size:15px;color:var(--brand)}.case .m{font-size:12.5px;color:var(--muted)}
+.updbar{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#e3f2e6;border:1px solid #9ccfa6;color:#1e5b2b;border-radius:6px;padding:8px 12px;margin:6px 0 10px;font-size:14px}
 .closedbar{background:#fff7e0;border:1px solid #f0d58a;color:#7a5a00;border-radius:6px;padding:6px 12px;margin-bottom:10px;font-size:13px}
 @media (max-width:760px){.hgrid{grid-template-columns:1fr 1fr}.agrid{grid-template-columns:1fr}.agrid>.lb{text-align:left;padding:0}}
 </style>
 </head>
 <body>
 <header>
-  <h1>非破壞檢測過程管制表（廠外）</h1><span class="sub">AM-QS-003 版次6 · 領班填寫用 · 2026-10-31</span>
+  <h1>非破壞檢測過程管制表（廠外）</h1><span class="sub">AM-QS-003 版次6 · 領班填寫用 · 版本 2026-10-31 22:00</span>
   <span class="sp"></span>
   <button class="pill" id="whoPill" title="切換班長／設定"></button><span class="pill" id="syncPill"></span>
   <button id="bCase" class="pill" title="切換或新增案子"></button>
@@ -133,6 +134,7 @@ button.pill{cursor:pointer}
 </header>
 <div id="status"></div>
 <main>
+  <div class="updbar hidden" id="updBar"><span id="updMsg"></span><button class="mini" id="bUpd">點此更新</button></div>
   <div class="closedbar hidden" id="closedBar"></div>
   <section class="panel" id="pHead">
     <h3><span class="step">1</span>表頭（對應文件表頭）<span class="lockmsg" id="headMsg"></span></h3>
@@ -182,7 +184,7 @@ button.pill{cursor:pointer}
       <div class="lb">備註</div>
       <div class="row" style="flex-wrap:nowrap"><input id="aNote" placeholder="（選填）" style="flex:1"><button id="bAdd">加入管制表</button></div>
     </div>
-    <div class="legend">每勾一個方法產生一列；開工日期自動帶今天，程序書依項目與方法自動建議（可在表中改）。人員旁為該方法的證照級數。</div>
+    <div class="legend"><b>同一項目中間停工再做：照樣再加一列，系統會問是「繼續做」還是「修後複檢」</b>（複檢會自動在名稱加註，例：…動葉片（磨修後），報告才會另出一張）。<br>每勾一個方法產生一列；開工日期自動帶今天，程序書依項目與方法自動建議（可在表中改）。人員旁為該方法的證照級數。</div>
   </section>
 
   <section class="panel" id="pTbl">
@@ -241,6 +243,16 @@ button.pill{cursor:pointer}
   <div class="muted" style="font-size:12.5px;padding-left:24px">區間內有在進行的項目才輸出（開工 ≤ 迄日，且完工 ≥ 起日或尚未完工）；項次沿用完整清單編號。</div>
   <div id="xMsg" style="font-size:13px;min-height:1.4em"></div>
   <div class="row" style="justify-content:flex-end"><button class="ghost" id="xCancel">取消</button><button id="xOk">輸出</button></div>
+</div></div>
+<div id="dmask" class="mask hidden"><div class="dlg" style="width:min(560px,100%)">
+  <h3>這個項目已經在管制表上</h3>
+  <div id="dMsg" style="font-size:14px;line-height:1.6"></div>
+  <div style="font-weight:700;color:var(--brand);font-size:13.5px">這一列是？</div>
+  <button class="ghost" id="dCont" style="text-align:left;white-space:normal">同一次檢測，中間停工後<b>繼續做</b><br><span class="muted" style="font-size:12px">報告會和原本那列合成一張，日期分段（例：115.10.1 ~ 115.10.3, 115.10.7-8）</span></button>
+  <div style="font-size:13px;color:var(--muted)">修理後<b>複檢</b>（要另出一張報告）：項目名稱自動加註</div>
+  <div class="row" id="dTimes"></div>
+  <div class="row"><input id="dOther" placeholder="其他加註，例：第 2 次複檢" style="flex:1"><button class="mini ghost" id="dOtherOk">加註並加入</button></div>
+  <div class="row" style="justify-content:flex-end"><button class="ghost" id="dSkip">不加入這一列</button></div>
 </div></div>
 <datalist id="dlItems"></datalist>
 <datalist id="dlMethods"></datalist>
@@ -459,9 +471,26 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     '_rels/.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>',
     'word/_rels/document.xml.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable" Target="fontTable.xml"/></Relationships>'
   };
+  // 給「現場紀錄繕打」讀的資料：放在 customXml（Word 另存時會保留），不影響版面；表格上只印 月/日，年份與證照級數靠這份資料
+  const EMBED_NS = 'urn:taipower:ndt:AM-QS-003';
+  function embedParts(data) {
+    const json = JSON.stringify(data);
+    const guid = '{' + 'xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx'.replace(/x/g, () => (Math.random() * 16 | 0).toString(16)).toUpperCase() + '}';
+    return {
+      'customXml/item1.xml': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<ctl xmlns="' + EMBED_NS + '" v="1">' + esc(json) + '</ctl>',
+      'customXml/itemProps1.xml': '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n<ds:datastoreItem ds:itemID="' + guid + '" xmlns:ds="http://schemas.openxmlformats.org/officeDocument/2006/customXml"><ds:schemaRefs><ds:schemaRef ds:uri="' + EMBED_NS + '"/></ds:schemaRefs></ds:datastoreItem>',
+      'customXml/_rels/item1.xml.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps" Target="itemProps1.xml"/></Relationships>'
+    };
+  }
   async function buildDocx(job, T, JSZip, type) {
     const zip = new JSZip();
     for (const k in PKG) zip.file(k, PKG[k]);
+    if (job.embed) {
+      const ex = embedParts(job.embed);
+      for (const k in ex) zip.file(k, ex[k]);
+      zip.file('[Content_Types].xml', PKG['[Content_Types].xml'].replace('</Types>', '<Override PartName="/customXml/itemProps1.xml" ContentType="application/vnd.openxmlformats-officedocument.customXmlProperties+xml"/></Types>'));
+      zip.file('word/_rels/document.xml.rels', PKG['word/_rels/document.xml.rels'].replace('</Relationships>', '<Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml" Target="../customXml/item1.xml"/></Relationships>'));
+    }
     zip.file('word/document.xml', buildDocumentXml(job, T));
     zip.file('word/styles.xml', T.styles);
     zip.file('word/settings.xml', T.settings);
@@ -469,7 +498,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     return zip.generateAsync({ type: type || 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', compression: 'DEFLATE' });
   }
 
-  const API = { W, fit, overflow, cellsOf, buildDocumentXml, buildDocx, mmdd, itemText };
+  const API = { W, fit, overflow, cellsOf, buildDocumentXml, buildDocx, mmdd, itemText, EMBED_NS };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else G.CtlGen = API;
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -672,16 +701,39 @@ function renderItemList() {
   const base = g ? REF.groups[g] : [].concat(...Object.values(REF.groups));
   $('#dlItems').innerHTML = [...new Set([...(S.hist || []), ...base])].map(v => '<option value="' + esc(v) + '">').join('');
 }
-function addItems() {
+// 重複項目：問清楚是「續作」還是「修後複檢」，複檢自動加註，避免報告端被合併成同一張
+const RETEST = ['磨修後', '銲補後', '磨修銲補後', '整修後', '刮修後'];
+const RETEST_RE = new RegExp('（(' + RETEST.join('|') + ')）$');
+function askDup(item, m, rows) {
+  return new Promise(res => {
+    const last = rows[rows.length - 1].r;
+    $('#dMsg').innerHTML = '「<b>' + esc(item + '  ' + m) + '</b>」已在第 ' + rows.map(x => x.i + 1).join('、') + ' 項（最近一列：開工 ' + esc(last.start || '未填') + '，' +
+      (last.done ? '<b style="color:var(--hi)">已通知完工 ' + esc(last.end || '') + '</b>，再做一次通常是修後複檢' : '尚未完工') + '）。';
+    $('#dTimes').innerHTML = RETEST.map(t => '<button class="mini" data-t="' + t + '">（' + t + '）</button>').join('');
+    $('#dOther').value = '';
+    const done = v => { $('#dmask').classList.add('hidden'); res(v); };
+    $('#dCont').onclick = () => done({ act: 'cont' });
+    $('#dSkip').onclick = () => done({ act: 'skip' });
+    $('#dTimes').onclick = e => { const b = e.target.closest('[data-t]'); if (b) done({ act: 'tag', tag: b.dataset.t }); };
+    $('#dOtherOk').onclick = () => { const v = $('#dOther').value.trim().replace(/^[（(]|[）)]$/g, ''); if (!v) { $('#dOther').focus(); return; } done({ act: 'tag', tag: v }); };
+    $('#dmask').classList.remove('hidden');
+  });
+}
+async function addItems() {
   const j = job(), a = j.add, item = $('#aItem').value.trim(), ms = addMethods();
   if (!item) { $('#aItem').focus(); status('請輸入檢測項目。'); return; }
   if (!ms.length) { status('請至少勾一個檢測方法。'); return; }
   const leader = $('#aLeader').value;
   let n = 0;
   for (const m of ms) {
-    const dup = j.rows.findIndex(r => r.item === item && r.method === m);
-    if (dup >= 0 && !confirm('「' + item + '  ' + m + '」已在第 ' + (dup + 1) + ' 項（開工 ' + (j.rows[dup].start || '未填') + '）。\n仍要再新增一列嗎？')) continue;
-    j.rows.push({ id: uid(), item, method: m, proc: pickProc(item, m), start: today(), end: '', crew: a.crew.slice(), leader: a.crew.includes(leader) ? leader : '', cal: !!a.cal, done: false, note: $('#aNote').value.trim() });
+    let it = item;
+    const dups = j.rows.map((r, i) => ({ r, i })).filter(x => x.r.item === item && x.r.method === m);
+    if (dups.length) {
+      const ans = await askDup(item, m, dups);
+      if (ans.act === 'skip') continue;
+      if (ans.act === 'tag') it = item.replace(RETEST_RE, '') + '（' + ans.tag + '）';
+    }
+    j.rows.push({ id: uid(), item: it, method: m, proc: pickProc(it, m), start: today(), end: '', crew: a.crew.slice(), leader: a.crew.includes(leader) ? leader : '', cal: !!a.cal, done: false, note: $('#aNote').value.trim() });
     n++;
   }
   if (!n) return;
@@ -811,6 +863,18 @@ function xCount() {
   $('#xMsg').textContent = '區間內 ' + n + ' 項' + (n ? '，輸出 ' + Math.ceil(n / slots()) + ' 頁。' : '，沒有可輸出的項目。');
   $('#xMsg').style.color = n ? '' : 'var(--hi)';
 }
+// 內嵌到 Word 的資料（給「現場紀錄繕打」匯入檢測項目、程序書、日期、人員與級數）
+function embedData(j, rows, range) {
+  return {
+    app: 'AM-QS-003', v: 1, exported: new Date().toISOString(), range: range || null,
+    jobNo: j.jobNo, plant: j.plant, unit: j.unit, equip: j.equip,
+    rows: rows.map(r => {
+      const qk = qualKey(r.method);
+      return { no: r.no, item: r.item, method: r.method, proc: r.proc || '', start: r.start || '', end: r.end || '', done: !!r.done,
+        crew: (r.crew || []).map(n => { const q = qk ? qual(n, qk) : null; return { name: n, lv: q ? q.lv : 0, expired: !!(q && q.expired) }; }) };
+    })
+  };
+}
 function exportDocx() {
   const j = job();
   if (!headOK(j)) { alert('請先填完表頭：工號、電廠、機組、設備。'); return; }
@@ -832,7 +896,7 @@ async function doExport() {
   if (iss.length && !confirm('輸出前請確認：\n\n' + iss.slice(0, 18).join('\n') + (iss.length > 18 ? '\n…另 ' + (iss.length - 18) + ' 項' : '') + '\n\n仍要輸出 Word？')) return;
   $('#xmask').classList.add('hidden');
   try {
-    const blob = await CtlGen.buildDocx(Object.assign({}, j, { rows }), T, JSZip, 'blob');
+    const blob = await CtlGen.buildDocx(Object.assign({}, j, { rows, embed: embedData(j, rows, all ? null : [f, t]) }), T, JSZip, 'blob');
     download(blob, fname(j.jobNo + '_' + j.plant + j.unit + j.equip + '_過程管制表(廠外)' + (tag || '_全部') + '.docx'));
     status('已輸出 Word：' + (all ? '全部 ' : f + '～' + t + ' 共 ') + rows.length + ' 項，' + Math.max(1, Math.ceil(rows.length / slots())) + ' 頁。');
   } catch (e) { alert('輸出失敗：' + e.message); }
@@ -1217,6 +1281,22 @@ function bindPicker() {
   $('#cCancel').onclick = () => { if (!pickerForced) $('#cmask').classList.add('hidden'); };
 }
 
+// ---------- 新版檢查：手機瀏覽器常留住舊版，開啟時比對線上建置時間 ----------
+const BUILD_STAMP = '版本 2026-10-31 22:00';
+async function checkUpdate() {
+  if (!/^https?:/.test(location.protocol)) return;               // 本機檔案不檢查
+  try {
+    const r = await fetch(location.pathname + '?check=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const m = (await r.text()).match(/版本 \d{4}-\d{2}-\d{2} \d{2}:\d{2}/);
+    if (!m || m[0] === BUILD_STAMP) return;
+    $('#updMsg').textContent = '有新版本（' + m[0] + '），目前是' + BUILD_STAMP.replace('版本 ', ' ') + '。';
+    $('#updBar').classList.remove('hidden');
+    $('#bUpd').onclick = () => { save(true); location.replace(location.pathname + '?v=' + encodeURIComponent(m[0].slice(3).replace(/\D/g, ''))); };
+  } catch (e) {}
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
+
 // ---------- 啟動 ----------
 async function start() {
   S = load();
@@ -1240,6 +1320,7 @@ async function start() {
 setPeopleData(PEOPLE_EMBED ? stripIds(PEOPLE_EMBED) : (cachedPeople() || { src: [], people: [] }));
 $('#dlMethods').innerHTML = METHODS.concat(['PAUT', 'TOFD', 'VT-1', 'LFET']).map(m => '<option value="' + m + '">').join('');
 bind(); bindSetup(); bindPicker(); bindSuggest();
+checkUpdate();
 // 需要登入：沒登入過；或雲端版（無內嵌名冊）尚未有姓名代號
 if (!WHO || (!PEOPLE_EMBED && !syncCfg().key)) { S = blank(); renderWho(); renderSync(); openSetup(true); }
 else start();

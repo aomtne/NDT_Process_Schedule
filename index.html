@@ -303,7 +303,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
       if (cp == null) return m;
       let pr = (inner.match(/<w:tcPr>[\s\S]*?<\/w:tcPr>/) || [''])[0];
       if (pr && !/<w:vAlign/.test(pr)) pr = pr.replace('</w:tcPr>', '<w:vAlign w:val="center"/></w:tcPr>');
-      if (typeof cp === 'object') { pr = pr.replace(/<w:textDirection[^>]*\/>/, '').replace('<w:vAlign', cp.dir + '<w:vAlign'); cp = cp.xml; }
+      if (typeof cp === 'object') { pr = pr.replace(/<w:tcMar>[\s\S]*?<\/w:tcMar>/, '').replace(/<w:textDirection[^>]*\/>/, '').replace('<w:vAlign', cp.dir + '<w:vAlign'); cp = cp.xml; }
       return '<w:tc>' + pr + cp + '</w:tc>';
     });
   }
@@ -336,7 +336,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   }
   function crewParas(r) { return crewFit(r).paras; }
 
-  // 直書：每人一直行（一段落），12pt、固定行高 14pt；字距緊縮 0.5pt 讓三字名（34.5pt）不撐高 35pt 列高
+  // 直書：每人一直行（一段落），12pt、固定行高 14pt；字距緊縮 0.75pt，三字名 33.75pt，放進 35pt 列高且不被切字
   // 欄寬可放 6 直行；7～9 人自動縮行高與字級；超過 9 人改回橫排
   // Word 直書（tbRl）由右往左排行，所以段落反序寫入，印出來即「由左至右」
   const VCOL = W[6] - 56 - 30;
@@ -347,11 +347,13 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     if (n > 6) { line = Math.floor(VCOL / n); pt = Math.min(12, Math.floor(line / 20 / 1.15)); }
     return { names, line, pt, sz: pt * 2, ld: false, lead: '' };
   }
+  // 直書儲存格：Word 會把左右邊界轉成上下邊界，三字名會被切到 → 邊界歸零；方向＝「垂直、由右至左」(tbRl)
+  const VCELL = '<w:tcMar><w:top w:w="0" w:type="dxa"/><w:start w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:end w:w="0" w:type="dxa"/></w:tcMar><w:textDirection w:val="tbRl"/>';
   function crewVertXml(v) {
     return v.names.slice().reverse().map(nm => '<w:p><w:pPr><w:pStyle w:val="Normal"/><w:snapToGrid w:val="false"/><w:spacing w:before="0" w:after="0" w:line="' + v.line + '" w:lineRule="exact"/><w:jc w:val="center"/>' +
       '<w:rPr><w:rFonts w:eastAsia="標楷體"/><w:sz w:val="' + v.sz + '"/><w:szCs w:val="' + v.sz + '"/></w:rPr></w:pPr>' +
       '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="標楷體" w:cs="Times New Roman" w:hint="eastAsia"/>' + (nm === v.lead ? '<w:b/><w:bCs/>' : '') +
-      '<w:spacing w:val="-10"/><w:sz w:val="' + v.sz + '"/><w:szCs w:val="' + v.sz + '"/></w:rPr><w:t xml:space="preserve">' + esc(nm) + '</w:t></w:r></w:p>').join('');
+      '<w:spacing w:val="-15"/><w:sz w:val="' + v.sz + '"/><w:szCs w:val="' + v.sz + '"/></w:rPr><w:t xml:space="preserve">' + esc(nm) + '</w:t></w:r></w:p>').join('');
   }
   const noteParas = r => String(r.note || '').split(/\r?\n/);
 
@@ -419,7 +421,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
           cell([procText(r)], 3),
           cell([mmdd(r.start)], 4),
           cell([mmdd(r.end)], 5),
-          cv ? { dir: '<w:textDirection w:val="tbRl"/>', xml: crewVertXml(cv) } : cf.paras.map(t => para(t, cf.sz, cf.ld ? 'start' : 'center')).join(''),
+          cv ? { dir: VCELL, xml: crewVertXml(cv) } : cf.paras.map(t => para(t, cf.sz, cf.ld ? 'start' : 'center')).join(''),
           cell([r.cal ? 'V' : ''], 7),
           cell([r.done ? 'V' : ''], 8),
           cell([''], 9),

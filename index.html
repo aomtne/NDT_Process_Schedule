@@ -27,6 +27,8 @@ main{max-width:1500px;margin:0 auto;padding:4px 18px 80px}
 .panel h3{margin:0 0 8px;font-size:15px;color:var(--brand);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .panel h3 .step{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px}
 .panel.locked{opacity:.45;pointer-events:none}
+.panel{scroll-margin-top:110px}
+@media (max-width:900px),(pointer:coarse) and (max-height:540px){.panel{scroll-margin-top:56px}}
 .lockmsg{color:var(--mid);font-size:13px;font-weight:400}
 .hgrid{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:8px 12px}
 .hgrid label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:2px}
@@ -38,7 +40,7 @@ main{max-width:1500px;margin:0 auto;padding:4px 18px 80px}
 .muted{color:var(--muted)}
 .hidden{display:none!important}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.secs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.secs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:10px}
 .sec{border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .sec .sh{background:#e9eef5;padding:5px 10px;font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center}
 .pp{display:grid;grid-template-columns:18px 64px 1fr;gap:6px;align-items:center;padding:4px 10px;border-top:1px solid #eef1f5;cursor:pointer;font-size:13px}
@@ -83,7 +85,7 @@ table.ct input.bad{color:var(--hi);font-weight:700}
 .ops{white-space:nowrap;text-align:center}
 .ops button{padding:1px 6px}
 .cnt{color:var(--muted);font-weight:400;font-size:13px}
-.pop{position:absolute;z-index:50;background:#fff;border:1px solid #9fb3c8;border-radius:8px;box-shadow:0 8px 24px rgba(20,40,70,.18);padding:8px 10px;min-width:280px;max-height:420px;overflow:auto}
+.pop{position:absolute;z-index:50;background:#fff;border:1px solid #9fb3c8;border-radius:8px;box-shadow:0 8px 24px rgba(20,40,70,.18);padding:8px 10px;min-width:280px;max-height:min(420px,70vh);overflow:auto;overscroll-behavior:contain}
 .pop .ph{font-weight:700;color:var(--brand);margin-bottom:4px;font-size:13px}
 .pop .pr{display:grid;grid-template-columns:18px 1fr 52px auto;gap:6px;align-items:center;padding:3px 2px;border-bottom:1px solid #f0f2f5;font-size:13px;cursor:pointer}
 .pop .lv{font-size:12px;font-weight:700;color:var(--brand2)}.pop .lv.no{color:var(--hi)}.pop .lv.exp{color:var(--mid)}
@@ -104,7 +106,7 @@ table.ct input.bad{color:var(--hi);font-weight:700}
 .kw #aKwN.zero{color:var(--hi)}
 .sug mark{background:#ffe58a;color:inherit;padding:0}
 @media (max-width:760px){.irow{grid-template-columns:1fr 1fr}.irow #aItem{grid-column:1/-1}}
-.sug{position:absolute;z-index:60;background:#fff;border:1px solid #9fb3c8;border-radius:8px;box-shadow:0 8px 24px rgba(20,40,70,.18);max-height:min(50vh,380px);overflow:auto;-webkit-overflow-scrolling:touch}
+.sug{position:absolute;z-index:60;background:#fff;border:1px solid #9fb3c8;border-radius:8px;box-shadow:0 8px 24px rgba(20,40,70,.18);max-height:min(50vh,380px);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .sug div{padding:9px 12px;border-bottom:1px solid #f0f2f5;font-size:14px;cursor:pointer;line-height:1.35}
 .sug div:hover,.sug div.on{background:#e3eefc}
 .sug div.h{background:#f7f9fb;color:var(--muted);font-size:11.5px;padding:4px 12px;cursor:default}
@@ -113,8 +115,8 @@ table.ct input.bad{color:var(--hi);font-weight:700}
 button.pill{cursor:pointer}
 .pill.ok{background:rgba(76,175,80,.28)}.pill.bad{background:#c0392b;border-color:#c0392b}.pill.off{opacity:.75}
 .panel.ro .tbar{pointer-events:none;opacity:.5}
-.mask{position:fixed;inset:0;background:rgba(15,30,50,.45);z-index:100;display:grid;place-items:center;padding:16px}
-.dlg{background:#fff;border-radius:10px;padding:16px 18px;width:min(520px,100%);display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.mask{position:fixed;inset:0;background:rgba(15,30,50,.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.dlg{margin:auto;background:#fff;border-radius:10px;padding:16px 18px;width:min(520px,100%);display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
 .dlg h3{margin:0;color:var(--brand)}
 .dlg label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--muted)}
 .case{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:6px;cursor:pointer;background:#fff}
@@ -123,27 +125,81 @@ button.pill{cursor:pointer}
 .updbar{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#e3f2e6;border:1px solid #9ccfa6;color:#1e5b2b;border-radius:6px;padding:8px 12px;margin:6px 0 10px;font-size:14px}
 .closedbar{background:#fff7e0;border:1px solid #f0d58a;color:#7a5a00;border-radius:6px;padding:6px 12px;margin-bottom:10px;font-size:13px}
 @media (max-width:760px){.hgrid{grid-template-columns:1fr 1fr}.agrid{grid-template-columns:1fr}.agrid>.lb{text-align:left;padding:0}}
+.ngrid{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:8px 12px}
+.ngrid label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:2px}
+.xmat{display:grid;grid-template-columns:auto 1fr auto auto 1fr auto;gap:6px 8px;align-items:center;font-size:14px}
+.snote{font-size:13px;background:#fff7e0;border:1px solid #f0d58a;color:#7a5a00;border-radius:6px;padding:6px 10px}
+#noJob{text-align:center;padding:28px 14px}
+body.nojob #pHead,body.nojob #pCrew,body.nojob #pAdd,body.nojob #pTbl,body.nojob #closedBar,body.nojob header .needjob{display:none!important}
+body:not(.nojob) #noJob{display:none}
+.mOnly{display:none}
+@media (max-width:420px){.xmat{grid-template-columns:auto 1fr auto}}
+/* ===== 手機／小平板：直向（寬 ≤ 900）與橫向（觸控且高 ≤ 540）===== */
+@media (max-width:900px),(pointer:coarse) and (max-height:540px){
+  header{padding:6px 8px;gap:6px;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  header::-webkit-scrollbar{display:none}
+  header h1{font-size:15px;white-space:nowrap;letter-spacing:0}
+  header h1 .hl,header .sub,header .sp{display:none}
+  header button,header .pill{flex:none;padding:5px 10px;font-size:13px}
+  #status{padding:4px 10px}
+  main{padding:4px 8px 60px}
+  .panel{padding:10px}
+  .hgrid,.ngrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hgrid input,.ngrid input,.irow input,.irow select,.pu select{width:100%;min-width:0}
+  .agrid{grid-template-columns:1fr}.agrid>.lb{text-align:left;padding:0}
+  .irow{grid-template-columns:1fr 1fr}.irow #aItem{grid-column:1/-1}
+  input,select,textarea{font-size:16px}
+  .dlg{padding:12px 14px}
+  .mOnly{display:inline-block}
+  /* 管制表：每一列改成一張卡片，可上下滑動瀏覽，不必左右捲 */
+  .tw{overflow:visible;border:0}
+  table.ct{display:block;min-width:0;background:transparent}
+  table.ct colgroup,table.ct thead{display:none}
+  table.ct tbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr));gap:8px}
+  table.ct tbody>tr:not([data-id]){display:block;grid-column:1/-1}
+  table.ct tbody>tr:not([data-id])>td{display:block;border:0;border-radius:6px}
+  table.ct tr[data-id]{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px 8px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff}
+  table.ct tr.done[data-id]{background:#f1f8f1;border-color:#a9d3ad}
+  table.ct tr[data-id]>td{border:0;padding:0;background:transparent;grid-column:1/-1;min-width:0;text-align:left}
+  table.ct tr[data-id]>td.ov{background:#fdecea;border-radius:4px}
+  table.ct tr[data-id]>td[data-l]::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--muted);margin-bottom:1px}
+  table.ct tr[data-id]>td:nth-child(1){grid-column:1/2;grid-row:1;display:flex;align-items:center}
+  table.ct tr[data-id]>td:nth-child(2){grid-column:2/4;grid-row:1;display:flex;align-items:center;font-size:15px}
+  table.ct tr[data-id]>td:nth-child(2)::before{display:inline;margin:0 4px 0 0;font-size:12px}
+  table.ct tr[data-id]>td:nth-child(11){grid-column:4/7;grid-row:1;text-align:right}
+  table.ct tr[data-id]>td:nth-child(5),table.ct tr[data-id]>td:nth-child(8){grid-column:1/4}
+  table.ct tr[data-id]>td:nth-child(6),table.ct tr[data-id]>td:nth-child(9){grid-column:4/7}
+  table.ct tr[data-id]>td:nth-child(8),table.ct tr[data-id]>td:nth-child(9){display:flex;align-items:center;gap:6px}
+  table.ct tr[data-id]>td:nth-child(8)::before,table.ct tr[data-id]>td:nth-child(9)::before{order:2;font-size:13.5px;color:var(--ink);margin:0}
+  table.ct input[type=checkbox]{width:22px;height:22px}
+  table.ct input:not([type=checkbox]),table.ct select,table.ct textarea{border-color:var(--line);background:#fff;font-size:16px}
+  table.ct .im{grid-template-columns:1fr 76px}
+  table.ct .ops button{padding:4px 12px;font-size:14px}
+  .tbar label{flex-basis:100%}
+}
 </style>
 </head>
-<body>
+<body class="nojob">
 <header>
-  <h1>非破壞檢測過程管制表（廠外）</h1><span class="sub">AM-QS-003 版次6 · 領班填寫用 · 版本 2026-11-15 22:50</span>
+  <h1><span class="hl">非破壞檢測</span>過程管制表<span class="hl">（廠外）</span></h1><span class="sub">AM-QS-003 版次6 · 領班填寫用 · 版本 2026-11-24 19:55</span>
   <span class="sp"></span>
   <button class="pill" id="whoPill" title="切換班長／設定"></button><span class="pill" id="syncPill"></span>
   <button id="bCase" class="pill" title="切換或新增案子"></button>
   <button id="bNew">＋新工號</button>
-  <button id="bClose" title="此案完成後關檔，才能建立新案">關檔</button><button id="bReopen" class="hidden">重新開啟</button>
-  <button id="bDelJob" title="刪除目前這份">刪除</button>
-  <button id="bSave">儲存草稿</button>
+  <button id="bClose" class="needjob" title="此案完成後關檔">關檔</button><button id="bReopen" class="needjob hidden">重新開啟</button>
+  <button id="bDelJob" class="needjob" title="刪除目前這份">刪除</button>
+  <button id="bSave" class="needjob">儲存草稿</button>
   <button id="bLoad">開啟草稿</button><input type="file" id="fLoad" accept=".json" hidden>
-  <button id="bDocx" class="primary">輸出 Word</button>
+  <button id="bDocx" class="primary needjob">輸出 Word</button>
 </header>
 <div id="status"></div>
 <main>
   <div class="updbar hidden" id="updBar"><span id="updMsg"></span><button class="mini" id="bUpd">點此更新</button></div>
   <div class="closedbar hidden" id="closedBar"></div>
+  <section class="panel" id="noJob"><div style="font-size:15px;margin-bottom:12px">目前沒有開啟的案子。</div><button id="bNoJob">確認班長並選擇／新增工號</button></section>
   <section class="panel" id="pHead">
-    <h3><span class="step">1</span>表頭（對應文件表頭）<span class="lockmsg" id="headMsg"></span></h3>
+    <h3><span class="step">1</span>表頭（對應文件表頭） <span class="crewsum" id="headSum"></span><button class="mini ghost hidden" id="bHeadEdit">修改表頭</button><span class="lockmsg" id="headMsg"></span></h3>
+    <div id="headBody">
     <div class="hgrid">
       <label>工號<input id="hJob" placeholder="例：115033" autocomplete="off"></label>
       <label>電廠（＿＿廠）<input id="hPlant" placeholder="例：大潭" autocomplete="off"></label>
@@ -152,10 +208,12 @@ button.pill{cursor:pointer}
     </div>
     <div class="preview" id="preview"></div>
     <div class="warnline" id="titleWarn"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:8px"><button id="bHeadDone">確認表頭</button></div>
+    </div>
   </section>
 
   <section class="panel" id="pCrew">
-    <h3><span class="step">2</span>本次工作人員 <span class="crewsum" id="crewSum"></span><button class="mini ghost hidden" id="bCrewEdit">修改人員</button><span class="lockmsg" id="crewMsg"></span></h3>
+    <h3><span class="step">2</span>本次工作人員 <span class="crewsum" id="crewSum"></span><button class="mini ghost hidden" id="bCrewEdit">修改／增加人員</button><span class="lockmsg" id="crewMsg"></span></h3>
     <div id="crewBody">
       <div class="muted" style="font-size:12.5px;margin-bottom:6px">勾選這次會出勤的人員；之後每個檢測項目只會從這些人裡挑。右側為各方法的證照級數（台電／協會取較高者；＊表示僅剩已過期證照）。</div>
       <div class="secs" id="secs"></div>
@@ -197,6 +255,7 @@ button.pill{cursor:pointer}
   <section class="panel" id="pTbl">
     <h3><span class="step">4</span>管制表 <span class="cnt" id="cnt"></span></h3>
     <div class="tbar">
+      <button class="mini ghost mOnly" id="bSelAll2">全選／取消全選</button>
       <button class="mini ghost" id="bDoneSel">選取列：通知完工（今日）</button>
       <button class="mini ghost" id="bCalSel">選取列：器材校準</button>
       <button class="mini ghost" id="bCrewSel">選取列：套用人員…</button>
@@ -216,6 +275,7 @@ button.pill{cursor:pointer}
 <div id="sug" class="sug hidden"></div>
 <div id="mask" class="mask hidden"><div class="dlg">
   <h3>班長登入</h3>
+  <div id="sNote" class="snote hidden"></div>
   <div class="muted" style="font-size:12.5px">以姓名＋姓名代號登入。資料依班長分開保存，別人無法覆蓋您的案子；每台電腦登入一次即可。</div>
   <label>姓名<input id="sWho" list="dlWho" autocomplete="off" placeholder="請輸入您的姓名"></label>
   <label>姓名代號<input id="sKey" type="password" inputmode="numeric" autocomplete="off" placeholder="6 位數"></label>
@@ -231,7 +291,7 @@ button.pill{cursor:pointer}
   <div id="cOpen"></div>
   <div class="sec" style="padding:10px 12px;border:1px dashed #9fb3c8;border-radius:8px">
     <div style="font-weight:700;color:var(--brand);font-size:13.5px;margin-bottom:6px">＋ 新增案子（被指派新工號時）</div>
-    <div class="hgrid" style="grid-template-columns:repeat(4,minmax(110px,1fr))">
+    <div class="ngrid">
       <label>工號<input id="nJob" autocomplete="off"></label>
       <label>電廠<input id="nPlant" autocomplete="off"></label>
       <label>機組<input id="nUnit" autocomplete="off"></label>
@@ -249,7 +309,7 @@ button.pill{cursor:pointer}
   <div class="row" style="padding-left:24px"><input type="date" id="xFrom"> ～ <input type="date" id="xTo"><button class="mini ghost" id="xWeek">上週五～本週四</button></div>
   <div class="muted" style="font-size:12.5px;padding-left:24px">開工日期落在區間內（起日 ≤ 開工 ≤ 迄日）的項目都輸出；項次與網頁上的項次相同。</div>
   <div style="border-top:1px solid #e3e8ef;padding-top:8px;margin-top:2px"><div style="font-size:14px;color:var(--ink);margin-bottom:6px">本週材料使用控管 <span class="muted" style="font-size:12.5px">（印在第一頁右上角，依區間分別記住）</span></div>
-    <div id="xMat" style="display:grid;grid-template-columns:auto 1fr auto auto 1fr auto;gap:6px 8px;align-items:center;font-size:14px"><span style="white-space:nowrap">SKC-S2：</span><input class="xm" data-k="SKC-S2" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span><span style="white-space:nowrap">SKL-SP2：</span><input class="xm" data-k="SKL-SP2" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span><span style="white-space:nowrap">SKD-S2：</span><input class="xm" data-k="SKD-S2" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span><span style="white-space:nowrap">14AM：</span><input class="xm" data-k="14AM" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span></div></div>
+    <div id="xMat" class="xmat"><span style="white-space:nowrap">SKC-S2：</span><input class="xm" data-k="SKC-S2" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span><span style="white-space:nowrap">SKL-SP2：</span><input class="xm" data-k="SKL-SP2" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span><span style="white-space:nowrap">SKD-S2：</span><input class="xm" data-k="SKD-S2" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span><span style="white-space:nowrap">14AM：</span><input class="xm" data-k="14AM" autocomplete="off" inputmode="decimal" style="min-width:0"><span>罐</span></div></div>
   <div id="xMsg" style="font-size:13px;min-height:1.4em"></div>
   <div class="row" style="justify-content:flex-end"><button class="ghost" id="xCancel">取消</button><button id="xOk">輸出</button></div>
 </div></div>
@@ -636,10 +696,28 @@ function status(t) { $('#status').textContent = t; }
 const job = () => S.jobs[S.cur];
 function newJob(h) {
   const id = 'j' + uid(), L = S.last || {}; h = h || {};
+  // 同一班長、同一工號已有案子（如同工號另一機組、關檔後另建）：沿用其人員與確認狀態；否則以上次人員為預設，但須重新確認
+  const jn = String(h.jobNo || '').trim();
+  const same = jn ? Object.values(S.jobs).filter(x => String(x.jobNo || '').trim() === jn && (x.crew || []).length)
+    .sort((a, b) => String(b.updatedAt || b.created || '').localeCompare(String(a.updatedAt || a.created || '')))[0] : null;
+  const base = same || L, crew = (base.crew || []).slice();
+  let leader = same ? (same.leader || '') : WHO;                       // 領隊預設＝登入的班長
+  if (!same && PMAP[WHO] && !crew.includes(WHO)) crew.unshift(WHO);   // 新工號：班長本人預設勾選
+  if (leader && !crew.includes(leader)) leader = '';
+  const order = PEOPLE.people.map(p => p.name), extra = (base.extra || []).slice();
+  crew.sort((a, b) => (order.indexOf(a) + 1 || 9999) - (order.indexOf(b) + 1 || 9999));
   S.jobs[id] = { id, owner: WHO, status: 'open', jobNo: h.jobNo || '', plant: h.plant || '', unit: h.unit || '', equip: h.equip || '', keepEx: true,
-    crew: (L.crew || []).slice(), leader: L.leader || '', extra: (L.extra || []).slice(), crewDone: !!(L.crew && L.crew.length),
+    crew, leader, extra, crewDone: !!(same && same.crewDone), headDone: false,
+    pu: same && same.pu && same.plant === h.plant && same.unit === h.unit ? Object.assign({}, same.pu) : null,
     rows: [], add: { methods: [], crew: null, leader: null, cal: false, group: '' }, created: new Date().toISOString() };
   S.cur = id; save();
+}
+// 舊資料補欄位：已在使用中的案子（有項目或人員已確認）視為表頭已確認；舊版存在 add 的電廠／機組改存 pu（會隨雲端同步）
+function normJob(j) {
+  j.status = j.status || 'open'; j.owner = j.owner || WHO; j.rows = j.rows || []; j.crew = j.crew || []; j.extra = j.extra || [];
+  ['jobNo', 'plant', 'unit', 'equip'].forEach(k => { j[k] = j[k] == null ? '' : String(j[k]); });
+  if (!j.pu && j.add && j.add.plant != null) j.pu = { p: j.add.plant, u: j.add.unit || '' };
+  if (j.headDone == null) j.headDone = headOK(j) && (j.rows.length > 0 || !!j.crewDone);
 }
 
 // ---------- 人員與資格 ----------
@@ -710,6 +788,10 @@ function renderHead() {
   const j = job();
   [['#hJob', 'jobNo'], ['#hPlant', 'plant'], ['#hUnit', 'unit'], ['#hEquip', 'equip']].forEach(([s, k]) => { const e = $(s); if (e.value !== j[k]) e.value = j[k]; e.classList.toggle('need', !j[k].trim()); });
   renderPreview();
+  const done = !!j.headDone && headOK(j);
+  $('#headBody').classList.toggle('hidden', done);
+  $('#bHeadEdit').classList.toggle('hidden', !done || isClosed(j));
+  $('#headSum').textContent = done ? '— 工號 ' + j.jobNo + '　' + j.plant + ' 廠 ' + j.unit + ' 機 ' + j.equip : '';
 }
 function renderPreview() {
   const j = job(), b = v => v.trim() ? '<u>' + esc(v.trim()) + '</u>' : '＿＿＿';
@@ -718,11 +800,12 @@ function renderPreview() {
   $('#titleWarn').textContent = len > 18 ? '表頭文字偏長（' + len + ' 字），Word 標題可能換行，建議精簡。' : '';
 }
 function renderLocks() {
-  const j = job(), h = headOK(j), c = h && j.crew.length > 0 && !!j.crewDone, cl = isClosed(j);
-  $('#headMsg').textContent = (h || cl) ? '' : '← 四欄都要填，才能繼續';
+  const j = job(), h = headOK(j), hd = h && !!j.headDone, c = hd && j.crew.length > 0 && !!j.crewDone, cl = isClosed(j);
+  $('#headMsg').textContent = cl ? '' : (!h ? '← 四欄都要填，才能繼續' : (hd ? '' : '← 確認無誤請按「確認表頭」'));
+  $('#bHeadDone').disabled = !h;
   $('#pHead').classList.toggle('locked', cl);
-  $('#pCrew').classList.toggle('locked', !h || cl); $('#crewMsg').textContent = (h || cl) ? '' : '（請先完成表頭）';
-  $('#pAdd').classList.toggle('locked', !c || cl); $('#addMsg').textContent = (c || cl) ? '' : (h ? '（請先完成人員選擇）' : '（請先完成表頭）');
+  $('#pCrew').classList.toggle('locked', !hd || cl); $('#crewMsg').textContent = (hd || cl) ? '' : (h ? '（請先確認表頭）' : '（請先完成表頭）');
+  $('#pAdd').classList.toggle('locked', !c || cl); $('#addMsg').textContent = (c || cl) ? '' : (hd ? '（請先完成人員選擇）' : '（請先確認表頭）');
   $('#pTbl').classList.toggle('locked', !h); $('#pTbl').classList.toggle('ro', cl);
   $('#bClose').classList.toggle('hidden', cl); $('#bReopen').classList.toggle('hidden', !cl);
   $('#closedBar').classList.toggle('hidden', !cl);
@@ -755,6 +838,7 @@ function renderCrew() {
 function toggleCrew(n, on) {
   const j = job(); const i = j.crew.indexOf(n);
   if (on && i < 0) j.crew.push(n); if (!on && i >= 0) j.crew.splice(i, 1);
+  if (on && n === WHO && !j.leader) j.leader = WHO;   // 領隊預設＝登入的班長
   const order = [...PEOPLE.people.map(p => p.name), ...(j.extra || [])];
   j.crew.sort((a, b) => order.indexOf(a) - order.indexOf(b));
 }
@@ -770,7 +854,8 @@ function renderAdd() {
   $('#aCal').checked = !!a.cal;
   $('#aKw').value = a.kw || ''; kwUpdate(false); updateInfo();
 }
-function addPU() { const j = job(), a = j.add; if (a.plant == null) return headPU(j); return { p: a.plant, u: unitNorm(a.unit) }; }
+const hasPU = j => !!j.pu || !!(j.add && j.add.plant != null);
+function addPU() { const j = job(), a = j.add || {}; if (j.pu) return { p: j.pu.p || '', u: unitNorm(j.pu.u) }; if (a.plant != null) return { p: a.plant, u: unitNorm(a.unit) }; return headPU(j); }
 function renderPU() {
   const { p, u } = addPU();
   $('#aPlant').innerHTML = '<option value="">' + (IDB ? '電廠（未選）' : '電廠清單載入中…') + '</option>' + IDB_PLANTS.filter(x => !IDB || IDB.v[x]).map(x => '<option' + (x === p ? ' selected' : '') + '>' + x + '</option>').join('');
@@ -844,15 +929,15 @@ function rowHtml(r, i) {
   const bad = r.start && r.end && r.end < r.start;
   return '<tr data-id="' + r.id + '" class="' + (r.done ? 'done' : '') + '">' +
     '<td class="c"><input type="checkbox" class="sel"></td>' +
-    '<td class="c no">' + (i + 1) + '</td>' +
-    '<td class="' + (ov.includes(2) ? 'ov' : '') + '"><div class="im"><input class="f-item" value="' + esc(r.item) + '" enterkeyhint="done"><input class="f-method" value="' + esc(r.method) + '" list="dlMethods" title="檢測方法"></div></td>' +
-    '<td class="' + (ov.includes(3) ? 'ov' : '') + '"><select class="f-proc">' + procOptions(r.method, r.proc) + '</select></td>' +
-    '<td><input type="date" class="f-start" value="' + (r.start || '') + '"></td>' +
-    '<td><input type="date" class="f-end' + (bad ? ' bad' : '') + '" value="' + (r.end || '') + '" title="' + (bad ? '完工早於開工' : '') + '"></td>' +
-    '<td class="' + (ov.includes(6) ? 'ov' : '') + '"><button class="crewbtn">' + crewLabel(r) + '</button></td>' +
-    '<td class="c"><input type="checkbox" class="f-cal"' + (r.cal ? ' checked' : '') + '></td>' +
-    '<td class="c"><input type="checkbox" class="f-done"' + (r.done ? ' checked' : '') + '></td>' +
-    '<td class="' + (ov.includes(10) ? 'ov' : '') + '"><textarea class="f-note" rows="1">' + esc(r.note || '') + '</textarea></td>' +
+    '<td class="c no" data-l="項次">' + (i + 1) + '</td>' +
+    '<td data-l="檢測項目／方法" class="' + (ov.includes(2) ? 'ov' : '') + '"><div class="im"><input class="f-item" value="' + esc(r.item) + '" enterkeyhint="done"><input class="f-method" value="' + esc(r.method) + '" list="dlMethods" title="檢測方法"></div></td>' +
+    '<td data-l="程序書編號" class="' + (ov.includes(3) ? 'ov' : '') + '"><select class="f-proc">' + procOptions(r.method, r.proc) + '</select></td>' +
+    '<td data-l="開工日期"><input type="date" class="f-start" value="' + (r.start || '') + '"></td>' +
+    '<td data-l="完工日期"><input type="date" class="f-end' + (bad ? ' bad' : '') + '" value="' + (r.end || '') + '" title="' + (bad ? '完工早於開工' : '') + '"></td>' +
+    '<td data-l="檢測人員" class="' + (ov.includes(6) ? 'ov' : '') + '"><button class="crewbtn">' + crewLabel(r) + '</button></td>' +
+    '<td class="c" data-l="器材已校準"><input type="checkbox" class="f-cal"' + (r.cal ? ' checked' : '') + '></td>' +
+    '<td class="c" data-l="通知完工"><input type="checkbox" class="f-done"' + (r.done ? ' checked' : '') + '></td>' +
+    '<td data-l="備註" class="' + (ov.includes(10) ? 'ov' : '') + '"><textarea class="f-note" rows="1">' + esc(r.note || '') + '</textarea></td>' +
     '<td class="ops"><button class="mini ghost up" title="上移">↑</button><button class="mini ghost dn" title="下移">↓</button><button class="mini warn del" title="刪除">✕</button></td></tr>';
 }
 function renderTable() {
@@ -949,7 +1034,7 @@ const matKey = () => document.querySelector('input[name=xr]:checked').value === 
 const matVals = () => { const o = {}; document.querySelectorAll('#xMat .xm').forEach(i => o[i.dataset.k] = i.value.trim()); return o; };
 // keep=true（改區間時）：新區間沒有記錄就保留畫面上已填的值，不清空
 function matLoad(keep) { const v = (job().matBy || {})[matKey()]; if (!v && keep === true) return; document.querySelectorAll('#xMat .xm').forEach(i => i.value = (v || {})[i.dataset.k] || ''); }
-function matSave() { const j = job(), v = matVals(); j.matBy = j.matBy || {}; if (Object.values(v).some(Boolean)) j.matBy[matKey()] = v; else delete j.matBy[matKey()]; save(true); }
+function matSave() { const j = job(), v = matVals(); j.matBy = j.matBy || {}; if (Object.values(v).some(Boolean)) j.matBy[matKey()] = v; else delete j.matBy[matKey()]; save(); }   // 材料用量同其他編輯：停手 1.5 秒後上傳雲端
 function exportDocx() {
   const j = job();
   if (!headOK(j)) { alert('請先填完表頭：工號、電廠、機組、設備。'); return; }
@@ -991,7 +1076,7 @@ function loadDraft(file) {
       const same = Object.values(S.jobs).find(x => x.id === jb.id || (jb.jobNo && x.jobNo === jb.jobNo && x.unit === jb.unit));
       if (same) { if (confirm('已有同一份（' + (same.jobNo || '未填工號') + ' ' + same.plant + same.unit + '），以草稿內容覆蓋？\n按「取消」則另存為新的一份。')) delete S.jobs[same.id]; else jb.id = 'j' + uid(); }
       jb.add = jb.add || { methods: [], crew: null, leader: null, cal: false, group: '' };
-      jb.extra = jb.extra || []; jb.crew = jb.crew || []; jb.owner = WHO; jb.status = jb.status || 'open';
+      jb.extra = jb.extra || []; jb.crew = jb.crew || []; jb.owner = WHO; jb.status = jb.status || 'open'; normJob(jb);
       S.jobs[jb.id] = jb; S.cur = jb.id; save(); renderAll(); status('已開啟草稿：' + file.name);
     } catch (e) { alert('開啟失敗：' + e.message); }
   };
@@ -999,11 +1084,17 @@ function loadDraft(file) {
 }
 
 // ---------- 事件 ----------
-function renderAll() { renderHead(); renderCrew(); renderAdd(); renderTable(); renderLocks(); }
+function renderAll() {
+  const j = S && job();
+  document.body.classList.toggle('nojob', !j);          // 沒有開啟的案子：不顯示舊畫面，只留「選擇／新增工號」
+  if (!j) { if (S) renderJobSel(); return; }
+  renderHead(); renderCrew(); renderAdd(); renderTable(); renderLocks();
+}
 function bind() {
-  [['#hJob', 'jobNo'], ['#hPlant', 'plant'], ['#hUnit', 'unit'], ['#hEquip', 'equip']].forEach(([s, k]) => $(s).addEventListener('input', e => { job()[k] = e.target.value; e.target.classList.toggle('need', !e.target.value.trim()); save(); renderPreview(); renderLocks(); if ((k === 'plant' || k === 'unit') && job().add.plant == null) { renderPU(); renderItemList(); kwUpdate(false); } }));
-  $('#bCase').onclick = () => openPicker(false);
-  $('#bNew').onclick = () => openPicker(false, true);
+  [['#hJob', 'jobNo'], ['#hPlant', 'plant'], ['#hUnit', 'unit'], ['#hEquip', 'equip']].forEach(([s, k]) => $(s).addEventListener('input', e => { job()[k] = e.target.value; e.target.classList.toggle('need', !e.target.value.trim()); save(); renderPreview(); renderLocks(); if ((k === 'plant' || k === 'unit') && !hasPU(job())) { renderPU(); renderItemList(); kwUpdate(false); } }));
+  $('#bCase').onclick = () => casePicker(false);
+  $('#bNew').onclick = () => casePicker(false, true);
+  $('#bNoJob').onclick = () => casePicker(true);
   $('#bClose').onclick = () => {
     const j = job(); if (isClosed(j)) return;
     if (!headOK(j)) { alert('表頭還沒填完，無法關檔。'); return; }
@@ -1020,7 +1111,7 @@ function bind() {
   };
   $('#whoPill').onclick = () => openSetup(false);
   $('#bDelJob').onclick = () => { const j = job(); if (!confirm('刪除「' + (j.jobNo || '未填工號') + ' ' + j.plant + j.unit + j.equip + '」（' + j.rows.length + ' 項）？\n建議先「儲存草稿」備份。')) return; S.deleted = S.deleted || []; S.deleted.push({ id: j.id, owner: j.owner || WHO, status: 'deleted', jobNo: j.jobNo, plant: j.plant, unit: j.unit, equip: j.equip, rows: [], updatedAt: new Date().toISOString() });
-    delete S.jobs[j.id]; const o = openJob(); S.cur = o ? o.id : (Object.keys(S.jobs)[0] || null); save(true); scheduleSync(0); if (S.cur) renderAll(); openPicker(!S.cur); };
+    delete S.jobs[j.id]; const o = openJob(); S.cur = o ? o.id : (Object.keys(S.jobs)[0] || null); save(true); scheduleSync(0); renderAll(); casePicker(!S.cur); };
   $('#bSave').onclick = saveDraft;
   $('#bLoad').onclick = () => $('#fLoad').click();
   $('#fLoad').onchange = e => { if (e.target.files[0]) loadDraft(e.target.files[0]); e.target.value = ''; };
@@ -1052,11 +1143,13 @@ function bind() {
     save(); renderCrew(); renderAdd(); renderLocks(); renderTable(); $('#aItem').focus();
   };
   $('#bCrewEdit').onclick = () => { job().crewDone = false; save(); renderCrew(); renderLocks(); };
+  $('#bHeadDone').onclick = () => { const j = job(); if (!headOK(j)) return; j.headDone = true; save(); renderHead(); renderLocks(); if (!j.crewDone) $('#pCrew').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  $('#bHeadEdit').onclick = () => { job().headDone = false; save(); renderHead(); renderLocks(); $('#hJob').focus(); };
 
   // 新增項目
   const puChange = () => { renderPU(); renderItemList(); kwUpdate(false); updateInfo(); ($('#aKw').value.trim() ? $('#aKw') : $('#aItem')).focus(); if ($('#aKw').value.trim()) kwUpdate(true); };
-  $('#aPlant').onchange = e => { const a = job().add; a.plant = e.target.value; a.unit = ''; save(); puChange(); };
-  $('#aUnit').onchange = e => { const a = job().add; const cur = addPU(); a.plant = cur.p; a.unit = e.target.value; save(); puChange(); };
+  $('#aPlant').onchange = e => { job().pu = { p: e.target.value, u: '' }; save(); puChange(); };          // 第一次設定後即為此案預設
+  $('#aUnit').onchange = e => { job().pu = { p: addPU().p, u: e.target.value }; save(); puChange(); };
   $('#aItem').addEventListener('input', () => updateInfo());
   $('#aItem').addEventListener('change', () => updateInfo());
   $('#aInfo').addEventListener('click', e => { if (e.target.id !== 'aUseM') return; const r = curRec(); if (!r) return; const a = job().add; a.methods = METHODS.filter(m => r.m.includes(m)); save(); renderAdd(); status('已勾選歷次檢測方法：' + a.methods.join('、')); });
@@ -1117,6 +1210,7 @@ function bind() {
   });
   $('#thNo').onclick = () => { S.sortAsc = !S.sortAsc; save(true); renderTable(); };
   $('#selAll').onchange = e => document.querySelectorAll('#tb .sel').forEach(c => c.checked = e.target.checked);
+  $('#bSelAll2').onclick = () => { const cs = [...document.querySelectorAll('#tb .sel')], on = cs.some(c => !c.checked); cs.forEach(c => c.checked = on); status(on ? '已選取全部 ' + cs.length + ' 列。' : '已取消選取。'); };
   $('#keepEx').onchange = e => { job().keepEx = e.target.checked; save(); renderTable(); };
   const needSel = () => { const rs = selRows(); if (!rs.length) status('請先勾選表格左側的列。'); return rs; };
   $('#bDoneSel').onclick = () => { const rs = needSel(); if (!rs.length) return; let nf = 0; rs.forEach(r => { if (!r.done) r.done = true; if (!r.end) { r.end = today(); nf++; } }); save(); renderTable(); status(rs.length + ' 列已標示通知完工' + (nf ? '，其中 ' + nf + ' 列無完工日期，已代入 ' + today() : '，完工日期皆保留原值') + '。'); };
@@ -1183,7 +1277,7 @@ async function restoreFromCloud() {
     const lj = S.jobs[cj.id];
     if (!lj || (!lj.dirty && String(cj.updatedAt || '') > String(lj.updatedAt || ''))) {
       cj.add = (lj && lj.add) || { methods: [], crew: null, leader: null, cal: false, group: '' };
-      cj.dirty = false; S.jobs[cj.id] = cj; n++;
+      cj.dirty = false; normJob(cj); S.jobs[cj.id] = cj; n++;
     }
   });
   const o = openJob(); if (o) S.cur = o.id; else if (!S.jobs[S.cur]) S.cur = Object.keys(S.jobs)[0] || null;
@@ -1195,14 +1289,49 @@ async function restoreFromCloud() {
   return n;
 }
 window.addEventListener('online', () => scheduleSync(500));
+// 雲端有較新的版本（同一班長在另一台手機／電腦改過）就更新本機；本機尚未上傳的修改不會被覆蓋
+let pullAt = 0;
+async function pullCloud() {
+  const c = syncCfg(), S0 = S; if (!c.url || !c.key || !WHO || !S || Date.now() - pullAt < 20000) return;
+  pullAt = Date.now();
+  try {
+    const d = await apiGet({ action: 'list' }); if (S !== S0) return;
+    let n = 0, cur = false;
+    (d.jobs || []).forEach(cj => {
+      const lj = S.jobs[cj.id];
+      if (lj && (lj.dirty || String(cj.updatedAt || '') <= String(lj.updatedAt || ''))) return;
+      cj.add = (lj && lj.add) || { methods: [], crew: null, leader: null, cal: false, group: '' };
+      cj.dirty = false; normJob(cj); S.jobs[cj.id] = cj; n++; if (cj.id === S.cur) cur = true;
+    });
+    if (!n) return;
+    lsSet(LSK(), JSON.stringify(S));
+    if (cur) { if (popRows) closePop(); renderAll(); } else renderJobSel();
+    status('已從雲端更新 ' + n + ' 份案子（在其他裝置修改過）。');
+  } catch (e) {}
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S && S.cur) pullCloud(); });
 
 // ---------- 登入：姓名＋姓名代號 ----------
 // 只接受部署作業的網址（…/macros/s/<ID>/exec）；瀏覽器轉址後的 googleusercontent 網址不能用
 const URL_OK = u => /^https:\/\/script\.google\.com\/(a\/[^/]+\/)?macros\/s\/[\w-]+\/exec$/.test(u);
 const URL_HINT = '雲端同步網址不正確：請到 Apps Script「部署 → 管理部署作業」複製結尾為 /exec 的網址（不是瀏覽器網址列上 googleusercontent 開頭的網址）。';
 function fillWhoList() { $('#dlWho').innerHTML = PEOPLE.people.map(p => '<option value="' + esc(p.name) + '">' + esc(p.sec) + '</option>').join(''); }
-function openSetup(force) {
+// 沒有任何進行中的工號時：先確認班長身分（登入），再選／建案子；剛登入完則直接進「選擇案子」
+let justLoggedIn = false, setupMode = '';
+const hasJobNo = () => !!S && openJobs().some(j => String(j.jobNo || '').trim());
+function casePicker(force, focusNew) {
+  if (!hasJobNo() && !justLoggedIn) { openSetup(!S || !S.cur, 'confirm'); return; }
+  justLoggedIn = false;
+  openPicker(force == null ? !S.cur : force, focusNew);
+}
+const savedSync = () => { try { return JSON.parse(lsGet(SYNC_K)) || {}; } catch (e) { return {}; } };
+function openSetup(force, mode) {
   const c = syncCfg();
+  setupMode = mode || '';
+  const cf = setupMode === 'confirm' && !!WHO;
+  $('#sNote').classList.toggle('hidden', !cf);
+  $('#sNote').textContent = cf ? '目前沒有進行中的工號。建立新工號前，請先確認班長身分；若您不是「' + WHO + '」，請改填自己的姓名與姓名代號。' : '';
+  $('#cmask').classList.add('hidden');
   $('#sWho').value = WHO || ''; $('#sKey').value = ''; $('#sUrl').value = c.url || ''; $('#sMsg').textContent = '';
   $('#sAdv').open = !c.url;
   fillWhoList();
@@ -1218,12 +1347,18 @@ async function login() {
   const msg = t => { $('#sMsg').textContent = t; };
   if (!who || !key) { msg('請輸入姓名與姓名代號。'); return; }
   if (url && !URL_OK(url)) { msg(URL_HINT); $('#sAdv').open = true; return; }
+  let offline = false;
   if (url) {
     msg('驗證中…');
     try {
       const d = await apiGet({ action: 'people' }, { url, who, key });
       if (d.people && d.people.people) { setPeopleData(d.people); lsSet(PEOPLE_K, JSON.stringify(d.people)); }
-    } catch (e) { msg('登入失敗：' + e.message); return; }
+    } catch (e) {
+      // 現場收訊不良：連不上雲端時，與這台電腦上次成功登入的姓名＋代號相同即可通過
+      const sc = savedSync();
+      if (e instanceof TypeError && sc.who === who && String(sc.key || '') === key) offline = true;
+      else { msg('登入失敗：' + e.message); return; }
+    }
   } else if (PEOPLE_EMBED) {
     const me = PEOPLE_EMBED.people.find(p => p.name === who);
     if (!me || String(me.id) !== key) { msg('姓名或姓名代號不正確。'); return; }
@@ -1231,7 +1366,10 @@ async function login() {
   lsSet(SYNC_K, JSON.stringify({ url, who, key }));
   const changed = who !== WHO; WHO = who; lsSet(WHO_K, WHO);
   $('#mask').classList.add('hidden');
-  if (changed || !S || !S.cur) await start(); else { renderWho(); scheduleSync(0); }
+  justLoggedIn = true;
+  const wasConfirm = setupMode === 'confirm'; setupMode = '';
+  if (changed || !S || !S.cur) await start(); else { renderWho(); scheduleSync(0); if (wasConfirm) casePicker(); else justLoggedIn = false; }
+  if (offline) status('目前連不上雲端，已用這台電腦上次的登入資料確認身分；恢復連線後會自動同步。');
 }
 function bindSetup() {
   $('#sOk').onclick = login;
@@ -1295,12 +1433,32 @@ function sugShow(inp) {
   box.innerHTML = (hist.length ? '<div class="h">最近使用</div>' : '') + hist.map((v, i) => '<div data-i="' + i + '">' + markHits(v, raw) + sugMeta(src, v) + '</div>').join('') +
     (base.length ? '<div class="h">' + esc(src.label) + (ks.length ? '　命中 ' + (src.base.filter(ok).length + src.hist.filter(ok).length) + ' 項' + (base.length >= 150 ? '，僅列前 150' : '') : '（可輸入關鍵字篩選）') + '</div>' : '') +
     base.map((v, i) => '<div data-i="' + (i + hist.length) + '">' + markHits(v, raw) + sugMeta(src, v) + '</div>').join('');
-  const b = inp.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+  box.classList.remove('hidden'); box.scrollTop = 0;
+  sugPlace();
+}
+// 依「實際看得到的範圍」（扣掉手機鍵盤）決定清單放在輸入框下方或上方、以及高度
+function sugPlace() {
+  const inp = sugInput, box = $('#sug'); if (!inp || box.classList.contains('hidden')) return;
+  const b = inp.getBoundingClientRect(), vw = document.documentElement.clientWidth, vv = window.visualViewport;
+  const vTop = vv ? vv.offsetTop : 0, vBot = vv ? vv.offsetTop + vv.height : window.innerHeight;
   const w = Math.min(Math.max(b.width, 280), vw - 16);
+  const below = vBot - b.bottom - 8, above = b.top - vTop - 8, up = below < 170 && above > below;
   box.style.width = w + 'px';
   box.style.left = (window.scrollX + Math.max(8, Math.min(b.left, vw - w - 8))) + 'px';
-  box.style.top = (window.scrollY + b.bottom + 2) + 'px';
-  box.classList.remove('hidden'); box.scrollTop = 0;
+  box.style.maxHeight = Math.max(120, Math.min(380, up ? above : below)) + 'px';
+  box.style.top = (window.scrollY + (up ? b.top - 2 - box.offsetHeight : b.bottom + 2)) + 'px';
+}
+// 手機：點項目欄時把輸入框捲到畫面上方，讓下方清單有足夠空間滑動
+const COARSE = window.matchMedia && matchMedia('(pointer:coarse)').matches;
+function sugRoom(el) {
+  if (!COARSE) return;
+  setTimeout(() => {
+    if (document.activeElement !== el) return;
+    const hh = document.querySelector('header').offsetHeight, vv = window.visualViewport;
+    const dy = el.getBoundingClientRect().top - (vv ? vv.offsetTop : 0) - hh - 8;
+    if (Math.abs(dy) > 6) window.scrollBy(0, dy);
+    setTimeout(sugPlace, 60);
+  }, 320);
 }
 function sugHide() { $('#sug').classList.add('hidden'); sugInput = null; sugIdx = -1; }
 function sugPick(i) {
@@ -1311,7 +1469,7 @@ function sugPick(i) {
 }
 function bindSuggest() {
   const isItem = t => t && t.matches && t.matches('#aItem, .f-item');
-  document.addEventListener('focusin', e => { if (isItem(e.target)) sugShow(e.target); });
+  document.addEventListener('focusin', e => { if (isItem(e.target)) { sugShow(e.target); sugRoom(e.target); } else if (e.target.id === 'aKw') sugRoom(e.target); });
   document.addEventListener('input', e => { if (!sugMute && isItem(e.target) && e.target === document.activeElement) sugShow(e.target); });
   document.addEventListener('focusout', e => { if (e.target === sugInput) setTimeout(() => { if (!sugTouch && document.activeElement !== sugInput) sugHide(); }, 350); });
   const box = $('#sug');
@@ -1333,7 +1491,8 @@ function bindSuggest() {
     } else if (e.key === 'Enter' && sugIdx >= 0) { e.preventDefault(); e.stopImmediatePropagation(); sugPick(sugIdx); }
     else if (e.key === 'Escape') sugHide();
   }, true);
-  window.addEventListener('resize', () => { if (sugInput) sugShow(sugInput); });
+  window.addEventListener('resize', sugPlace);
+  if (window.visualViewport) { visualViewport.addEventListener('resize', sugPlace); visualViewport.addEventListener('scroll', sugPlace); }
 }
 
 // ---------- 選擇案子 ----------
@@ -1367,7 +1526,8 @@ function createCase() {
     else { same.status = 'open'; delete same.closedAt; S.cur = same.id; save(); pickCase(same.id); return; }
   }
   newJob(h); $('#cmask').classList.add('hidden'); renderAll();
-  status('已建立「' + h.jobNo + ' ' + h.plant + h.unit + '」，工作人員沿用上次的選擇（可在步驟 2 修改）。');
+  status('已建立「' + h.jobNo + ' ' + h.plant + h.unit + '」：' + (job().crewDone ? '工作人員沿用同工號的案子。請確認表頭。' : '請確認表頭，再勾選並確認本次工作人員（已預設上次人員，領隊為班長）。'));
+  window.scrollTo(0, 0);
 }
 function bindPicker() {
   ['#cOpen', '#cClosed'].forEach(x => $(x).addEventListener('click', e => { const c = e.target.closest('.case'); if (c) pickCase(c.dataset.id); }));
@@ -1377,7 +1537,7 @@ function bindPicker() {
 }
 
 // ---------- 新版檢查：手機瀏覽器常留住舊版，開啟時比對線上建置時間 ----------
-const BUILD_STAMP = '版本 2026-11-15 22:50';
+const BUILD_STAMP = '版本 2026-11-24 19:55';
 async function checkUpdate() {
   if (!/^https?:/.test(location.protocol)) return;               // 本機檔案不檢查
   try {
@@ -1396,19 +1556,22 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) chec
 async function start() {
   S = load();
   S.memo = S.memo || {}; S.hist = S.hist || []; S.deleted = S.deleted || []; S.last = S.last || { crew: [], leader: '', extra: [] };
-  Object.values(S.jobs).forEach(j => { j.status = j.status || 'open'; j.owner = j.owner || WHO; });
+  Object.values(S.jobs).forEach(normJob);
+  const hadLocal = Object.keys(S.jobs).length > 0;
   let msg = '';
   // 本機沒有資料、雲端有 → 自動還原（換電腦或清過瀏覽器時）
   if (!Object.keys(S.jobs).length && syncCfg().url && syncCfg().key) { try { const n = await restoreFromCloud(); if (n) msg = '已從雲端還原 ' + n + ' 份案子。'; } catch (e) { msg = '雲端還原失敗：' + e.message; } }
   const opens = openJobs();
   if (!S.jobs[S.cur] || (opens.length && isClosed(S.jobs[S.cur]))) S.cur = opens.length ? opens[0].id : (Object.keys(S.jobs)[0] || null);
   renderWho(); renderSync();
-  if (S.cur) renderAll();
-  // 1 個進行中：直接開；0 個或 2 個以上：先選案子
-  if (opens.length !== 1) openPicker(!S.cur);
+  renderAll();
+  // 1 個進行中：直接開；2 個以上：先選案子；沒有任何工號：先確認班長登入，再選／建案子
+  if (opens.length !== 1 || !hasJobNo()) casePicker(!S.cur);
+  justLoggedIn = false;
   const cur = job();
   status(msg || ('班長 ' + WHO + '：已載入' + (cur && !isClosed(cur) && cur.jobNo ? '進行中的案子「' + cur.jobNo + ' ' + cur.plant + cur.unit + '」' : '') + '。人員資料：' + (PEOPLE.src || []).join('、')));
   scheduleSync(800);
+  if (hadLocal) setTimeout(pullCloud, 1200);
   const c = syncCfg();
   if (!PEOPLE_EMBED && c.url && c.key) apiGet({ action: 'people' }).then(d => { if (d.people && d.people.people) { setPeopleData(d.people); lsSet(PEOPLE_K, JSON.stringify(d.people)); renderCrew(); } }).catch(() => {});
 }
@@ -1418,7 +1581,7 @@ bind(); bindSetup(); bindPicker(); bindSuggest();
 idbLoad();
 checkUpdate();
 // 需要登入：沒登入過；或雲端版（無內嵌名冊）尚未有姓名代號
-if (!WHO || (!PEOPLE_EMBED && !syncCfg().key)) { S = blank(); renderWho(); renderSync(); openSetup(true); }
+if (!WHO || (!PEOPLE_EMBED && !syncCfg().key)) { S = blank(); renderAll(); renderWho(); renderSync(); openSetup(true); }
 else start();
 
 </script>
